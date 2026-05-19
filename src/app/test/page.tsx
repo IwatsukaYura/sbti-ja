@@ -18,7 +18,7 @@ export default function TestPage() {
     setAnswers(next);
 
     if (step + 1 >= total) {
-      router.push(`/result?a=${next.join(",")}`);
+      router.push(`/result?a=${next.join("")}`);
     } else {
       setStep(step + 1);
     }

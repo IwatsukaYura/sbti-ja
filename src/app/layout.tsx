@@ -17,6 +17,7 @@ const SITE_DESCRIPTION =
   "本家 SBTI(Silly Behavioral Type Indicator)の日本語版(ベータ)。27タイプから、午前3時に投稿する方のあなたを診断する。10問1〜2分。";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://sbti-ja.vercel.app"),
   title: {
     default: `SBTI 診断 — ${SITE_NAME}`,
     template: `%s | ${SITE_NAME}`,

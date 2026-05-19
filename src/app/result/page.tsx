@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { RadarChart } from "@/components/RadarChart";
 import { DIMENSIONS, type ModelKey } from "@/data/dimensions";
 import { QUESTIONS } from "@/data/questions";
 import { TYPES } from "@/data/types";
@@ -31,7 +32,7 @@ export default async function ResultPage({ searchParams }: ResultPageProps) {
     return <ErrorView message="回答データがありません。" />;
   }
 
-  const answers = a.split(",").map((s) => Number.parseInt(s, 10));
+  const answers = a.split("").map((s) => Number.parseInt(s, 10));
   if (
     answers.length !== QUESTIONS.length ||
     answers.some((n) => !Number.isInteger(n) || n < 0)
@@ -83,6 +84,9 @@ export default async function ResultPage({ searchParams }: ResultPageProps) {
               あなたの回答から見えた、5モデル × 3次元のレベル。
             </p>
           </div>
+          <div className="mb-12">
+            <RadarChart profile={result.resultProfile} />
+          </div>
           <div className="flex flex-col gap-8">
             {MODEL_ORDER.map((m) => (
               <div key={m}>
@@ -109,9 +113,13 @@ export default async function ResultPage({ searchParams }: ResultPageProps) {
 
       <section className="px-6 py-16 border-t border-zinc-900">
         <div className="max-w-md mx-auto flex flex-col gap-3">
+          <ShareButtons
+            shareUrl={`https://sbti-ja.vercel.app/result?a=${a}`}
+            shareText={`私のSBTIは「${type.nickname}」(${type.code})でした。\n${type.catchCopy}`}
+          />
           <Link
             href="/test"
-            className="text-center px-6 py-4 rounded-full bg-lime-400 text-black font-semibold hover:bg-lime-300 transition-colors"
+            className="text-center px-6 py-4 rounded-full bg-lime-400 text-black font-semibold hover:bg-lime-300 transition-colors mt-4"
           >
             もう一度診断する
           </Link>
@@ -163,6 +171,40 @@ function DimensionRow({ id, label, low, high, level }: DimensionRowProps) {
         </div>
         <span className="text-xs text-zinc-500 w-24 shrink-0">{high}</span>
       </div>
+    </div>
+  );
+}
+
+interface ShareButtonsProps {
+  shareUrl: string;
+  shareText: string;
+}
+
+function ShareButtons({ shareUrl, shareText }: ShareButtonsProps) {
+  const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+    shareText,
+  )}&url=${encodeURIComponent(shareUrl)}&hashtags=SBTI診断`;
+  const lineUrl = `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(
+    shareUrl,
+  )}`;
+  return (
+    <div className="flex gap-3">
+      <a
+        href={twitterUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex-1 text-center px-6 py-4 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-100 hover:border-lime-400 transition-colors"
+      >
+        𝕏 でシェア
+      </a>
+      <a
+        href={lineUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex-1 text-center px-6 py-4 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-100 hover:border-lime-400 transition-colors"
+      >
+        LINE でシェア
+      </a>
     </div>
   );
 }
